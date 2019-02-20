@@ -2,6 +2,8 @@ package com.qijianguo.service.model;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * @author Angus
  * @version 1.0

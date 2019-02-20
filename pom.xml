@@ -120,6 +120,11 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -162,7 +167,7 @@
 					<!-- 移动生成的文件 -->
 					<verbose>true</verbose>
 					<!-- 可有覆盖 -->
-					<overwrite>true</overwrite>
+					<overwrite>false</overwrite>
 					<configurationFile>
 						src/main/resources/mybatis-generator.xml
 					</configurationFile>
