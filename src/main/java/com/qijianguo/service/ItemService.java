@@ -45,4 +45,5 @@ public interface ItemService {
      */
     boolean increaseSales(Integer itemId, Integer amount);
 
+
 }

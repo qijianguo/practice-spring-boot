@@ -2,17 +2,21 @@ package com.qijianguo.service.impl;
 
 import com.qijianguo.controller.paramobject.OrderCreateParams;
 import com.qijianguo.dao.OrderInfoDoMapper;
+import com.qijianguo.dao.PromoDoMapper;
 import com.qijianguo.dao.SequenceInfoDoMapper;
 import com.qijianguo.dataobject.OrderInfoDo;
+import com.qijianguo.dataobject.PromoDo;
 import com.qijianguo.dataobject.SequenceInfoDo;
 import com.qijianguo.error.BusinessException;
 import com.qijianguo.error.EmBusinessError;
 import com.qijianguo.service.ItemService;
 import com.qijianguo.service.OrderService;
+import com.qijianguo.service.PromoService;
 import com.qijianguo.service.UserService;
 import com.qijianguo.service.model.ItemModel;
 import com.qijianguo.service.model.OrderInfoModel;
 import com.qijianguo.service.model.UserModel;
+import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 /**
  * @author Angus
@@ -41,6 +46,10 @@ public class OrderServiceImpl implements OrderService{
     private OrderInfoDoMapper orderInfoDoMapper;
     @Autowired
     private SequenceInfoDoMapper sequenceInfoDoMapper;
+    @Autowired
+    private PromoService promoService;
+    @Autowired
+    private PromoDoMapper promoDoMapper;
     @Override
     public OrderInfoModel createOrder(OrderInfoModel orderInfoModel) throws BusinessException {
         // 校验参数
@@ -71,12 +80,32 @@ public class OrderServiceImpl implements OrderService{
         if (!result2) {
             throw new BusinessException(EmBusinessError.UNKNOW_ERROR, "销量保存错误");
         }
+        // 4. 查看是否促销
+        if (orderInfoModel.getPromoId() != null) {
+            PromoDo promoDo = promoDoMapper.selectByPrimaryKey(orderInfoModel.getPromoId());
+            if (!Objects.equals(orderInfoModel.getItemId(), promoDo.getItemId())) {
+                throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR, "商品无活动");
+            }
+            DateTime now = new DateTime();
+            if (now.isBefore(promoDo.getStartTime().getTime())) {
+                throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR, "活动未开始");
+            }
+            if (new DateTime(promoDo.getEndTime()).isBeforeNow()) {
+                throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR, "活动已结束");
+            }
+            orderInfoModel.setPromoId(orderInfoModel.getPromoId());
+            orderInfoModel.setOrderPrice(promoDo.getPromoItemPrice());
+            orderInfoModel.setOrderPrice(promoDo.getPromoItemPrice().multiply(new BigDecimal(orderInfoModel.getAmount())));
+        } else {
+            orderInfoModel.setAmount(orderInfoModel.getAmount());
+            orderInfoModel.setOrderPrice(itemModel.getPrice().multiply(new BigDecimal(orderInfoModel.getAmount())));
+        }
+
         // 设置订单ID：20190220 123456 01
         orderInfoModel.setUserId(orderInfoModel.getUserId());
         orderInfoModel.setItemId(orderInfoModel.getItemId());
         orderInfoModel.setItemPrice(itemModel.getPrice());
-        orderInfoModel.setAmount(orderInfoModel.getAmount());
-        orderInfoModel.setOrderPrice(itemModel.getPrice().multiply(new BigDecimal(orderInfoModel.getAmount())));
+
     }
 
     private OrderInfoDo convertFromOrderModel(OrderInfoModel orderInfoModel) {

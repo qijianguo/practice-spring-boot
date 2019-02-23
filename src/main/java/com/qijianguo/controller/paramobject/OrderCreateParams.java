@@ -27,4 +27,9 @@ public class OrderCreateParams {
     @Max(value = 99, message = "商品数量不能大于99")
     private Integer amount;
 
+    /**
+     * 促销ID，可选
+     */
+    private Integer promoId;
+
 }

@@ -49,9 +49,13 @@
                enableUpdateByExample="false" enableDeleteByExample="false" selectByExampleQueryId="false">
         </table>-->
 
-        <table tableName="sequence_info" domainObjectName="SequenceInfoDo" enableCountByExample="false"
+        <!--<table tableName="sequence_info" domainObjectName="SequenceInfoDo" enableCountByExample="false"
                enableUpdateByExample="false" enableDeleteByExample="false" selectByExampleQueryId="false">
-        </table>
+        </table>-->
+
+        <!--<table tableName="promo" domainObjectName="PromoDo" enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false" selectByExampleQueryId="false">
+        </table>-->
 
     </context>
 </generatorConfiguration>

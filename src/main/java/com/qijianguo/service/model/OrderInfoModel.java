@@ -32,4 +32,10 @@ public class OrderInfoModel {
      */
     private BigDecimal orderPrice;
 
+    /**
+     * 促销ID
+     */
+    private Integer promoId;
+
+
 }

@@ -35,4 +35,6 @@ public class ItemModel {
     @NotNull(message = "商品描述不能为空")
     private String description;
 
+    private PromoModel promoModel;
+
 }

@@ -36,16 +36,18 @@ public class OrderController {
     @GetMapping("/save")
     public Result createOrder(@Valid OrderCreateParams orderCreateParams) throws BusinessException {
         OrderInfoModel orderInfoModel = convertFromOrderParams(orderCreateParams);
-        Boolean isLogin = (Boolean) Optional.ofNullable(httpServletRequest.getSession().getAttribute("IS_LOGIN")).orElse(false);
+        /*Boolean isLogin = (Boolean) Optional.ofNullable(httpServletRequest.getSession().getAttribute("IS_LOGIN")).orElse(false);
         if (isLogin) {
             UserModel userModel = (UserModel) httpServletRequest.getSession().getAttribute("LOGIN_USER");
             if (userModel == null) {
                 throw new BusinessException(EmBusinessError.USER_NOT_LOGIN);
             }
             orderInfoModel.setUserId(userModel.getId());
-        }
+        } else {
+            throw new BusinessException(EmBusinessError.USER_NOT_LOGIN);
+        }*/
         OrderInfoModel orderInfoModelForResult = orderService.createOrder(orderInfoModel);
-        return Result.success(orderInfoModelForResult);
+        return Result.success();
     }
 
     private OrderInfoModel convertFromOrderParams(OrderCreateParams orderCreateParams) {
