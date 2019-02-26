@@ -1,5 +1,7 @@
 package com.qijianguo.controller;
 
+import com.qijianguo.annotation.Authentication;
+import com.qijianguo.annotation.CurrentUser;
 import com.qijianguo.controller.paramobject.ItemCreateParams;
 import com.qijianguo.controller.viewobject.ItemVo;
 import com.qijianguo.dataobject.Result;
@@ -7,6 +9,7 @@ import com.qijianguo.error.BusinessException;
 import com.qijianguo.error.EmBusinessError;
 import com.qijianguo.service.ItemService;
 import com.qijianguo.service.model.ItemModel;
+import com.qijianguo.service.model.UserModel;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -40,14 +43,15 @@ public class ItemController {
     }
 
     @GetMapping("/list")
-    public Result getListItem() throws BusinessException {
+    public Result getListItem(@CurrentUser UserModel userModel) throws BusinessException {
         List<ItemModel> list = itemService.listItem();
         List<ItemVo> itemVoList = convertItemVoFromModelList(list);
         return Result.success(itemVoList);
     }
 
     @GetMapping("/{id}")
-    public Result getItem(@PathVariable(value = "id") Integer id) throws BusinessException {
+    @Authentication
+    public Result getItem(@CurrentUser UserModel userModel, @PathVariable(value = "id") Integer id) throws BusinessException {
         ItemModel itemModel = itemService.getItemById(id);
         ItemVo itemVo = convertItemVoFromModel(itemModel);
         return Result.success(itemVo);

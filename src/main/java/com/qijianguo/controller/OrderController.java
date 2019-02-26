@@ -1,5 +1,7 @@
 package com.qijianguo.controller;
 
+import com.qijianguo.annotation.Authentication;
+import com.qijianguo.annotation.CurrentUser;
 import com.qijianguo.controller.paramobject.OrderCreateParams;
 import com.qijianguo.dataobject.Result;
 import com.qijianguo.error.BusinessException;
@@ -34,18 +36,10 @@ public class OrderController {
     private HttpServletRequest httpServletRequest;
 
     @GetMapping("/save")
-    public Result createOrder(@Valid OrderCreateParams orderCreateParams) throws BusinessException {
+    @Authentication
+    public Result createOrder(@CurrentUser UserModel userModel, @Valid OrderCreateParams orderCreateParams) throws BusinessException {
+        orderCreateParams.setUserId(userModel.getId());
         OrderInfoModel orderInfoModel = convertFromOrderParams(orderCreateParams);
-        /*Boolean isLogin = (Boolean) Optional.ofNullable(httpServletRequest.getSession().getAttribute("IS_LOGIN")).orElse(false);
-        if (isLogin) {
-            UserModel userModel = (UserModel) httpServletRequest.getSession().getAttribute("LOGIN_USER");
-            if (userModel == null) {
-                throw new BusinessException(EmBusinessError.USER_NOT_LOGIN);
-            }
-            orderInfoModel.setUserId(userModel.getId());
-        } else {
-            throw new BusinessException(EmBusinessError.USER_NOT_LOGIN);
-        }*/
         OrderInfoModel orderInfoModelForResult = orderService.createOrder(orderInfoModel);
         return Result.success();
     }

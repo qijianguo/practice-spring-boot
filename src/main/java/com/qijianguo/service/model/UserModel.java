@@ -2,6 +2,7 @@ package com.qijianguo.service.model;
 
 import lombok.Data;
 
+import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 
 /**
@@ -29,5 +30,7 @@ public class UserModel {
     private String thirdPartyId;
 
     private String encrptPassword;
+
+    private String token;
 
 }

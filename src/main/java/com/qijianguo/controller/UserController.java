@@ -1,11 +1,13 @@
 package com.qijianguo.controller;
 
+import com.qijianguo.commons.Constants;
 import com.qijianguo.controller.paramobject.LoginParams;
 import com.qijianguo.controller.paramobject.RegisterParams;
 import com.qijianguo.controller.viewobject.UserVo;
 import com.qijianguo.dataobject.Result;
 import com.qijianguo.error.BusinessException;
 import com.qijianguo.error.EmBusinessError;
+import com.qijianguo.service.TokenService;
 import com.qijianguo.service.UserService;
 import com.qijianguo.service.model.UserModel;
 import com.qijianguo.util.MD5Util;
@@ -43,6 +45,8 @@ public class UserController {
     private UserService userService;
     @Autowired
     private HttpServletRequest httpServletRequest;
+    @Autowired
+    private TokenService tokenService;
 
     @GetMapping("/opt")
     public Result getOpt(String telephone) {
@@ -73,13 +77,13 @@ public class UserController {
         return Result.success();
     }
 
+    @PostMapping("/login")
     public Result login(@Valid LoginParams params) throws BusinessException {
         // 用户校验是否合法
         UserModel userModel =  userService.validateLogin(params);
-        //保存token或session
-        this.httpServletRequest.getSession().setAttribute("IS_LOGIN", true);
-        this.httpServletRequest.getSession().setAttribute("LOGIN_USER", userModel);
+        String token = tokenService.createToken(userModel);
         UserVo userVo = convertFromModel(userModel);
+        userVo.setToken(token);
         return Result.success(userVo);
     }
 

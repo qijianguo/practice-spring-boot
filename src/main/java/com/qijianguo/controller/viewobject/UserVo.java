@@ -22,4 +22,6 @@ public class UserVo {
 
     private String telephone;
 
+    private String token;
+
 }
