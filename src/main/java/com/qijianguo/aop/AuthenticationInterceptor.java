@@ -55,5 +55,5 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
         request.setAttribute(Constants.TELPHONE, userModel);
         return true;
     }
-    
+
 }
