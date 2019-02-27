@@ -1,5 +1,6 @@
 package com.qijianguo.service.model;
 
+import com.qijianguo.service.RedisEntity;
 import lombok.Data;
 
 import javax.persistence.Transient;
@@ -13,7 +14,7 @@ import javax.validation.constraints.NotBlank;
  * @date 2019/2/16 11:05
  */
 @Data
-public class UserModel {
+public class UserModel implements RedisEntity {
 
     private Integer id;
 
@@ -32,5 +33,15 @@ public class UserModel {
     private String encrptPassword;
 
     private String token;
+
+    @Override
+    public String generateRedisKey() {
+        return String.format("user_info:%s:name", name);
+    }
+
+    @Override
+    public String generateRedisKey(Object key) {
+        return String.format("user_info:%d:name", key);
+    }
 
 }
