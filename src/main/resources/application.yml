@@ -10,9 +10,14 @@ spring:
   jpa:
     hibernate:
      show-sql: true
-  mybatis:
+  mail:
+    host: smtp.qq.com
+    username: 1633972602@qq.com
+    password: mptymfrweknebgif
 mybatis:
   mapper-locations: classpath:mapping/*.xml
+
+
 
 #  thymeleaf:
 #    check-template: true
